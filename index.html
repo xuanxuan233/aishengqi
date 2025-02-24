@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>请选择你的神奇宝贝</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            margin-top: 50px;
+        }
+        #question {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        #dialog {
+            font-size: 20px;
+            color: red;
+            margin-bottom: 10px;
+        }
+        .btn {
+            padding: 15px 30px;
+            font-size: 20px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        #choice1 { background-color: #4CAF50; color: white; }
+        #choice2 { background-color: #f44336; color: white; }
+    </style>
+</head>
+<body>
+    <div id="question">请选择你的神奇宝贝</div>
+    <button id="choice1" class="btn" onclick="ending1()">巨烦狗</button>
+    <button id="choice2" class="btn" onclick="angerCare()">爱生气</button>
+    
+    <div id="dialog"></div>
+    
+    <script>
+        let clickCount = 0;
+        const messages = [
+            "爱生气饲养手册\n欢迎来到爱生气饲养手册！爱生气是一种特别的情感生物，它有着不可忽视的脾气，因此，饲养它需要特别的细心和耐心。请严格遵守以下规则，确保您的爱生气能够保持快乐、健康，且不引发情绪爆发。",
+            "一、了解爱生气的特性\n1. 爱生气生性善良但非常容易被激怒。
+2.它对环境和言语非常敏感，稍有不慎就可能爆发情绪。
+3.爱生气喜欢控制局面，它的需求和想法是绝对的，必须尊重。",
+            "二、避免激怒爱生气\n1.切勿打断爱生气的讲话或行为，它有强烈的自尊心。
+2.遇到爱生气表现出不满时，务必尽快道歉，确保它能平复情绪。
+3.遇到突发情况时，温柔地引导而非反驳，这样能有效避免火上加油。（尤其是你！伊凡！）",
+            "三、尊重与听从\n1.爱生气要求自己的一切想法和愿望都能得到及时满足。绝对不要无视它的要求。
+2.遇到爱生气发号施令时，务必认真执行，不拖延。只要满足它的需求，它的情绪将保持在平稳状态。
+3.在与爱生气互动时，切记以“是的好的都听你的”的态度回应它，并快速采取行动。",
+            "四、食物与休息\n1.爱生气并不挑食，但是对于进食的需求并不高，常常需要提醒进食，尽量提供它喜欢的美味食物，以提高它的进食量。
+2.爱生气有强烈的作息要求，确保它每天有足够的休息时间。不要打扰它的休息，哪怕它作息颠倒，日夜不分，尤其是在创作的时候！如果它要求安静的环境，请立即提供。",
+            "五、快乐的爱生气\n爱生气在感到被尊重和理解时，会表现得非常温顺、可爱。通过不断的关怀、耐心和满足它的愿望，您将培养出一个快乐且充满爱的爱生气。",
+            "六、警告事项\n爱生气无法忍受批评和忽视。若您未能及时满足它的需求，它可能会进行强烈的反应，如暴怒、冷战等。因此，永远记住：无论如何，请不要惹它生气！",
+            "七、小贴士\n始终保持积极的心态，与爱生气的互动中，尽量避免消极情绪。
+2.爱生气喜欢被宠爱，时不时给它点小惊喜，它会因此对您更加坦率。",
+            "八、遵循\n1.遵循这些简单而有效的规则，您将成为最成功的爱生气饲养员！别忘了，听话是与爱生气和谐相处的最重要法则！",
+            "是否还要领养你的爱生气？"
+        ];
+
+        function angerCare() {
+            if (clickCount < messages.length) {
+                document.getElementById('dialog').innerText = messages[clickCount];
+                clickCount++;
+            } else {
+                document.getElementById('question').innerText = "是否还要领养你的爱生气？";
+                document.getElementById('dialog').innerText = "";
+                document.getElementById('choice1').innerText = "是";
+                document.getElementById('choice2').innerText = "否";
+                document.getElementById('choice1').onclick = confirmLife;
+                document.getElementById('choice2').onclick = ending2;
+            }
+        }
+
+        function confirmLife() {
+            document.getElementById('question').innerText = "把你今后的人生全部都奉献给这个有趣的小矮人？";
+            document.getElementById('choice1').innerText = "是";
+            document.getElementById('choice2').innerText = "否";
+            document.getElementById('choice1').onclick = finalConfirm;
+            document.getElementById('choice2').onclick = ending2;
+        }
+
+        function finalConfirm() {
+            document.getElementById('question').innerText = "一定一定？";
+            document.getElementById('choice1').innerText = "Always";
+            document.getElementById('choice2').style.display = "none";
+            document.getElementById('choice1').onclick = happyEnding;
+        }
+
+        function happyEnding() {
+            document.getElementById('question').innerText = "爱生气爱你！";
+            document.getElementById('choice1').style.display = "none";
+        }
+
+        function ending1() {
+            document.getElementById('question').innerText = "都说了巨烦听得懂狗话吗老天爷下巧克力毒死这个b吧";
+            document.getElementById('choice1').style.display = "none";
+            document.getElementById('choice2').style.display = "none";
+        }
+        
+        function ending2() {
+            document.getElementById('question').innerText = "我早就知道你是出尔反尔的人，可恶的！狡诈的！虚伪的！人类！我讨厌你们！我要住到森林里面去！白雪公主也给我滚出去！吃苹果去吧！傻叉！";
+            document.getElementById('choice1').style.display = "none";
+            document.getElementById('choice2').style.display = "none";
+        }
+    </script>
+</body>
+</html>
