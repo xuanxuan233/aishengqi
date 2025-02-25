@@ -1,101 +1,213 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>请选择你的神奇宝贝</title>
+    <title>iMessage Chat</title>
     <style>
         body {
-            text-align: center;
             font-family: Arial, sans-serif;
-            margin-top: 50px;
+            margin: 0;
+            padding: 0;
+            background-color: #E5E5EA;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: relative;
         }
-        #question {
-            font-size: 24px;
-            margin-bottom: 20px;
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: white;
+            border-bottom: 1px solid #ccc;
         }
-        #dialog {
-            font-size: 20px;
-            color: red;
-            margin-bottom: 10px;
-        }
-        .btn {
-            padding: 15px 30px;
-            font-size: 20px;
+        .header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
             cursor: pointer;
-            border: none;
-            transition: all 0.3s ease;
         }
-        #choice1 { background-color: #4CAF50; color: white; }
-        #choice2 { background-color: #f44336; color: white; }
+        .chat-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            overflow-y: auto;
+        }
+        .message-container {
+            display: flex;
+            align-items: flex-end;
+            margin: 5px 0;
+        }
+        .message-container img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .message {
+            max-width: 80%; /* 控制消息宽度，避免消息太窄 */
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 16px;
+            position: relative;
+        }
+        .sent {
+            background-color: #34C759;
+            color: white;
+            align-self: flex-end; /* 发送的消息靠右 */
+            border-bottom-right-radius: 0;
+        }
+        .received {
+            background-color: #007AFF;
+            color: white;
+            align-self: flex-start; /* 接收的消息靠左 */
+            border-bottom-left-radius: 0;
+        }
+        .profile-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            flex-direction: row;
+            padding: 20px;
+        }
+        .profile-content {
+            background-color: white;
+            padding: 10px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+        .profile-content img {
+            width: 200px;
+            height: auto;
+            border-radius: 10px;
+        }
+        .profile-text {
+            margin-left: 20px;
+            text-align: left;
+            font-size: 16px;
+        }
+        .close-btn {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #007AFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .input-container {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: white;
+            border-top: 1px solid #ccc;
+        }
+        .input-container input {
+            flex-grow: 1;
+            padding: 10px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            margin-right: 10px;
+        }
+        .affinity-bar {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 200px;
+            background-color: #ccc;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .affinity-progress {
+            width: 100%;
+            height: 50%;
+            background-color: red;
+            transition: height 0.3s;
+        }
     </style>
 </head>
-<body>
-    <div id="question">请选择你的神奇宝贝</div>
-    <button id="choice1" class="btn" onclick="ending1()">巨烦狗</button>
-    <button id="choice2" class="btn" onclick="angerCare()">爱生气</button>
+<body onclick="sendMessage()">
+    <div class="header">
+        <img src="https://i.ibb.co/hJFh07tf/88-ACB457-ABD6-4-BC5-A4-B8-59-F627-EA0435.jpg" alt="avatar" onclick="showProfile()">
+        <div>殺手兔</div>
+    </div>
+    <div class="chat-container" id="chatContainer">
+    </div>
     
-    <div id="dialog"></div>
+    <div class="profile-container" id="profile">
+        <div class="profile-content">
+            <img src="https://i.ibb.co/1tV0B1x2/D7760-BDA-C13-C-4-BA7-97-EC-4-D143-EC7-B333.jpg" alt="profile-pic">
+            <div class="profile-text">
+                <p>usirono huyu 後之フユ</p>
+                <p>誕生日：1/1</p>
+                <p>年齢：24</p>
+                <p>身長：181</p>
+                <p>体重：63</p>
+                <p>好きな物…妹、(以前の)前野</p>
+                <p>嫌いな物…父親、後之家、ZENO</p>
+                <p>好きな食べ物…辛い物</p>
+                <p>嫌いな食べ物…甘い物全般</p>
+            </div>
+        </div>
+        <button class="close-btn" onclick="hideProfile()">閉じる</button>
+    </div>
+
+    <div class="input-container">
+        <input type="text" id="messageInput" placeholder="メッセージを入力...">
+        <button onclick="sendMessage()">送信</button>
+    </div>
     
+    <div class="affinity-bar">
+        <div class="affinity-progress" id="affinityProgress" style="height: 0%;"></div>
+    </div>
+
     <script>
-        let clickCount = 0;
-        const messages = [
-            "爱生气饲养手册\n欢迎来到爱生气饲养手册！...",
-            "一、了解爱生气的特性\n1. 爱生气生性善良...",
-            "二、避免激怒爱生气\n1.切勿打断爱生气的讲话...",
-            "三、尊重与听从\n1.爱生气要求自己的一切...",
-            "四、食物与休息\n1.爱生气并不挑食...",
-            "五、快乐的爱生气\n爱生气在感到被尊重和理解时...",
-            "六、警告事项\n爱生气无法忍受批评和忽视...",
-            "七、小贴士\n1.始终保持积极的心态...",
-            "遵循这些简单而有效的规则，您将成为最成功的爱生气饲养员！",
-            "是否还要领养你的爱生气？"
+        let messages = [
+            { type: 'sent', text: '你好' },
+            { type: 'received', text: '你好' },
+            { type: 'sent', text: '吃了吗' },
+            { type: 'received', text: '吃了' }
         ];
-
-        function angerCare() {
-            if (clickCount < messages.length) {
-                document.getElementById('dialog').innerText = messages[clickCount];
-                clickCount++;
-            } else {
-                document.getElementById('question').innerText = "是否还要领养你的爱生气？";
-                document.getElementById('dialog').innerText = "";
-                document.getElementById('choice1').innerText = "是";
-                document.getElementById('choice2').innerText = "否";
-                document.getElementById('choice1').onclick = confirmLife;
-                document.getElementById('choice2').onclick = ending2;
+        let index = 0;
+        let affinity = -100;
+        function showProfile() {
+            document.getElementById('profile').style.display = 'flex';
+        }
+        function hideProfile() {
+            document.getElementById('profile').style.display = 'none';
+        }
+        function sendMessage() {
+            if (index < messages.length) {
+                let chatContainer = document.getElementById('chatContainer');
+                let messageData = messages[index];
+                let messageDiv = document.createElement('div');
+                messageDiv.classList.add('message-container');
+                if (messageData.type === 'received') {
+                    let img = document.createElement('img');
+                    img.src = "https://i.ibb.co/hJFh07tf/88-ACB457-ABD6-4-BC5-A4-B8-59-F627-EA0435.jpg";
+                    img.onclick = showProfile;
+                    messageDiv.appendChild(img);
+                }
+                let textDiv = document.createElement('div');
+                textDiv.classList.add('message', messageData.type);
+                textDiv.innerText = messageData.text;
+                messageDiv.appendChild(textDiv);
+                chatContainer.appendChild(messageDiv);
+                index++;
             }
-        }
-
-        function confirmLife() {
-            document.getElementById('question').innerText = "把你今后的人生全部都奉献给这个有趣的小矮人？";
-            document.getElementById('choice1').innerText = "是";
-            document.getElementById('choice2').innerText = "否";
-            document.getElementById('choice1').onclick = finalConfirm;
-            document.getElementById('choice2').onclick = ending2;
-        }
-
-        function finalConfirm() {
-            document.getElementById('question').innerText = "一定一定？";
-            document.getElementById('choice1').innerText = "Always";
-            document.getElementById('choice2').style.display = "none";
-            document.getElementById('choice1').onclick = happyEnding;
-        }
-
-        function happyEnding() {
-            document.getElementById('question').innerText = "爱生气爱你！";
-            document.getElementById('choice1').style.display = "none";
-        }
-
-        function ending1() {
-            document.getElementById('question').innerText = "都说了巨烦听得懂狗话吗老天爷下巧克力毒死这个b吧";
-            document.getElementById('choice1').style.display = "none";
-            document.getElementById('choice2').style.display = "none";
-        }
-        
-        function ending2() {
-            document.getElementById('question').innerText = "我早就知道你是出尔反尔的人，可恶的！狡诈的！虚伪的！人类！我讨厌你们！我要住到森林里面去！白雪公主也给我滚出去！吃苹果去吧！傻叉！";
-            document.getElementById('choice1').style.display = "none";
-            document.getElementById('choice2').style.display = "none";
         }
     </script>
 </body>
