@@ -1,214 +1,273 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iMessage Chat</title>
+    <title>神奇宠物养成</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #E5E5EA;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            position: relative;
+            background: #f0f0f0;
         }
-        .header {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            background-color: white;
-            border-bottom: 1px solid #ccc;
-        }
-        .header img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 10px;
-            cursor: pointer;
-        }
-        .chat-container {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 10px;
-            overflow-y: auto;
-        }
-        .message-container {
-            display: flex;
-            align-items: flex-end;
-            margin: 5px 0;
-        }
-        .message-container img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-        .message {
-            max-width: 80%; /* 控制消息宽度，避免消息太窄 */
-            padding: 10px 15px;
-            border-radius: 20px;
-            font-size: 16px;
-            position: relative;
-        }
-        .sent {
-            background-color: #34C759;
-            color: white;
-            align-self: flex-end; /* 发送的消息靠右 */
-            border-bottom-right-radius: 0;
-        }
-        .received {
-            background-color: #007AFF;
-            color: white;
-            align-self: flex-start; /* 接收的消息靠左 */
-            border-bottom-left-radius: 0;
-        }
-        .profile-container {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            justify-content: center;
-            align-items: center;
-            flex-direction: row;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
             padding: 20px;
         }
-        .profile-content {
-            background-color: white;
-            padding: 10px;
+        .pet-panel {
+            background: white;
             border-radius: 10px;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
+            padding: 20px;
+            margin: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        .profile-content img {
-            width: 200px;
-            height: auto;
+        .status-bar {
+            height: 20px;
+            background: #eee;
             border-radius: 10px;
+            margin: 5px 0;
         }
-        .profile-text {
-            margin-left: 20px;
-            text-align: left;
-            font-size: 16px;
+        .status-fill {
+            height: 100%;
+            border-radius: 10px;
+            background: #4CAF50;
+            transition: width 0.3s;
         }
-        .close-btn {
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #007AFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
+        .shop-item {
             cursor: pointer;
-        }
-        .input-container {
-            display: flex;
-            align-items: center;
             padding: 10px;
-            background-color: white;
-            border-top: 1px solid #ccc;
+            margin: 5px;
+            background: #eee;
+            border-radius: 5px;
         }
-        .input-container input {
-            flex-grow: 1;
-            padding: 10px;
-            border-radius: 20px;
+        .battle-log {
+            height: 150px;
+            overflow-y: auto;
             border: 1px solid #ccc;
-            margin-right: 10px;
-        }
-        .affinity-bar {
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 20px;
-            height: 200px;
-            background-color: #ccc;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        .affinity-progress {
-            width: 100%;
-            height: 50%;
-            background-color: red;
-            transition: height 0.3s;
+            padding: 10px;
+            margin: 10px 0;
         }
     </style>
 </head>
-<body onclick="sendMessage()">
-    <div class="header">
-        <img src="https://i.ibb.co/hJFh07tf/88-ACB457-ABD6-4-BC5-A4-B8-59-F627-EA0435.jpg" alt="avatar" onclick="showProfile()">
-        <div>殺手兔</div>
-    </div>
-    <div class="chat-container" id="chatContainer">
-    </div>
-    
-    <div class="profile-container" id="profile">
-        <div class="profile-content">
-            <img src="https://i.ibb.co/1tV0B1x2/D7760-BDA-C13-C-4-BA7-97-EC-4-D143-EC7-B333.jpg" alt="profile-pic">
-            <div class="profile-text">
-                <p>usirono huyu 後之フユ</p>
-                <p>誕生日：1/1</p>
-                <p>年齢：24</p>
-                <p>身長：181</p>
-                <p>体重：63</p>
-                <p>好きな物…妹、(以前の)前野</p>
-                <p>嫌いな物…父親、後之家、ZENO</p>
-                <p>好きな食べ物…辛い物</p>
-                <p>嫌いな食べ物…甘い物全般</p>
-            </div>
+<body>
+    <div class="container">
+        <div id="player-info">
+            <h2>金币: <span id="gold">1000</span></h2>
         </div>
-        <button class="close-btn" onclick="hideProfile()">閉じる</button>
-    </div>
 
-    <div class="input-container">
-        <input type="text" id="messageInput" placeholder="メッセージを入力...">
-        <button onclick="sendMessage()">送信</button>
-    </div>
-    
-    <div class="affinity-bar">
-        <div class="affinity-progress" id="affinityProgress" style="height: 0%;"></div>
+        <div class="pet-panel">
+            <h3>我的宠物</h3>
+            <div id="pet-list"></div>
+        </div>
+
+        <div class="pet-panel">
+            <h3>宠物商店</h3>
+            <div id="shop"></div>
+        </div>
+
+        <div class="pet-panel">
+            <h3>战斗竞技场</h3>
+            <div id="battle-interface"></div>
+        </div>
     </div>
 
     <script>
-        let messages = [
-            { type: 'sent', text: '你好' },
-            { type: 'received', text: '你好' },
-            { type: 'sent', text: '吃了吗' },
-            { type: 'received', text: '吃了' }
-        ];
-        let index = 0;
-        let affinity = -100;
-        function showProfile() {
-            document.getElementById('profile').style.display = 'flex';
-        }
-        function hideProfile() {
-            document.getElementById('profile').style.display = 'none';
-        }
-        function sendMessage() {
-            if (index < messages.length) {
-                let chatContainer = document.getElementById('chatContainer');
-                let messageData = messages[index];
-                let messageDiv = document.createElement('div');
-                messageDiv.classList.add('message-container');
-                if (messageData.type === 'received') {
-                    let img = document.createElement('img');
-                    img.src = "https://i.ibb.co/hJFh07tf/88-ACB457-ABD6-4-BC5-A4-B8-59-F627-EA0435.jpg";
-                    img.onclick = showProfile;
-                    messageDiv.appendChild(img);
+        class Pet {
+            constructor(name, type) {
+                this.name = name;
+                this.type = type;
+                this.level = 1;
+                this.exp = 0;
+                this.hunger = 100;
+                this.clean = 100;
+                this.hp = 100;
+                this.attack = 10;
+                this.status = 'normal';
+                this.skills = this.getInitialSkills();
+            }
+
+            getInitialSkills() {
+                const skills = {
+                    'Fire': ['火焰冲击', '烈焰护盾'],
+                    'Water': ['水泡攻击', '治疗之雨'],
+                    'Earth': ['岩石投掷', '大地守护']
+                };
+                return skills[this.type] || ['普通攻击'];
+            }
+
+            levelUp() {
+                if (this.exp >= this.level * 100) {
+                    this.exp -= this.level * 100;
+                    this.level++;
+                    this.hp += 20;
+                    this.attack += 5;
+                    return true;
                 }
-                let textDiv = document.createElement('div');
-                textDiv.classList.add('message', messageData.type);
-                textDiv.innerText = messageData.text;
-                messageDiv.appendChild(textDiv);
-                chatContainer.appendChild(messageDiv);
-                index++;
+                return false;
             }
         }
+
+        class PetGame {
+            constructor() {
+                this.pets = [];
+                this.gold = 1000;
+                this.shopItems = [
+                    { name: '宠物食物', price: 50, effect: { hunger: 30 } },
+                    { name: '清洁套装', price: 80, effect: { clean: 40 } },
+                    { name: '经验药水', price: 150, effect: { exp: 100 } }
+                ];
+                this.init();
+            }
+
+            init() {
+                this.loadGame();
+                this.renderShop();
+                this.renderPets();
+                setInterval(() => this.timeUpdate(), 60000);
+            }
+
+            buyPet() {
+                const types = ['Fire', 'Water', 'Earth'];
+                const type = types[Math.floor(Math.random() * types.length)];
+                const name = prompt('请输入宠物名字:');
+                if (name && this.gold >= 500) {
+                    this.gold -= 500;
+                    this.pets.push(new Pet(name, type));
+                    this.saveGame();
+                    this.renderPets();
+                }
+            }
+
+            useItem(item, petIndex) {
+                const pet = this.pets[petIndex];
+                Object.entries(item.effect).forEach(([key, value]) => {
+                    pet[key] = Math.min(pet[key] + value, 100);
+                });
+                this.saveGame();
+                this.renderPets();
+            }
+
+            trainPet(petIndex) {
+                const pet = this.pets[petIndex];
+                if (this.gold >= 100) {
+                    this.gold -= 100;
+                    pet.exp += 50;
+                    if (pet.levelUp()) {
+                        alert(`${pet.name} 升级了！当前等级：${pet.level}`);
+                    }
+                    this.saveGame();
+                    this.renderPets();
+                }
+            }
+
+            startBattle(attackerIndex, defenderIndex) {
+                const attacker = this.pets[attackerIndex];
+                const defender = this.pets[defenderIndex];
+                
+                let battleLog = [];
+                battleLog.push(`${attacker.name} 向 ${defender.name} 发起攻击！`);
+
+                while (attacker.hp > 0 && defender.hp > 0) {
+                    const damage = Math.floor(attacker.attack * (0.8 + Math.random() * 0.4));
+                    defender.hp = Math.max(defender.hp - damage, 0);
+                    battleLog.push(`${attacker.name} 造成 ${damage} 点伤害`);
+
+                    if (defender.hp <= 0) break;
+
+                    const counterDamage = Math.floor(defender.attack * (0.8 + Math.random() * 0.4));
+                    attacker.hp = Math.max(attacker.hp - counterDamage, 0);
+                    battleLog.push(`${defender.name} 反击造成 ${counterDamage} 点伤害`);
+                }
+
+                const winner = attacker.hp > 0 ? attacker : defender;
+                battleLog.push(`${winner.name} 获得了胜利！`);
+                this.showBattleLog(battleLog);
+                this.saveGame();
+                this.renderPets();
+            }
+
+            timeUpdate() {
+                this.pets.forEach(pet => {
+                    pet.hunger = Math.max(pet.hunger - 5, 0);
+                    pet.clean = Math.max(pet.clean - 3, 0);
+                });
+                this.renderPets();
+                this.saveGame();
+            }
+
+            renderPets() {
+                const container = document.getElementById('pet-list');
+                container.innerHTML = '';
+                
+                this.pets.forEach((pet, index) => {
+                    const petDiv = document.createElement('div');
+                    petDiv.className = 'pet-panel';
+                    petDiv.innerHTML = `
+                        <h4>${pet.name} (${pet.type}) Lv.${pet.level}</h4>
+                        <div>饥饿度: 
+                            <div class="status-bar">
+                                <div class="status-fill" style="width:${pet.hunger}%"></div>
+                            </div>
+                        </div>
+                        <div>清洁度: 
+                            <div class="status-bar">
+                                <div class="status-fill" style="width:${pet.clean}%"></div>
+                            </div>
+                        </div>
+                        <button onclick="game.useItem(game.shopItems[0], ${index})">喂食</button>
+                        <button onclick="game.useItem(game.shopItems[1], ${index})">清洁</button>
+                        <button onclick="game.trainPet(${index})">训练 (100金币)</button>
+                        <button onclick="game.startBattle(${index}, ${index === 0 ? 1 : 0})">战斗</button>
+                    `;
+                    container.appendChild(petDiv);
+                });
+
+                document.getElementById('gold').textContent = this.gold;
+            }
+
+            renderShop() {
+                const shop = document.getElementById('shop');
+                this.shopItems.forEach((item, index) => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'shop-item';
+                    itemDiv.innerHTML = `
+                        ${item.name} - ${item.price}金币
+                        <button onclick="game.buyItem(${index})">购买</button>
+                    `;
+                    shop.appendChild(itemDiv);
+                });
+
+                const buyPetBtn = document.createElement('div');
+                buyPetBtn.className = 'shop-item';
+                buyPetBtn.innerHTML = '购买新宠物 (500金币) <button onclick="game.buyPet()">购买</button>';
+                shop.appendChild(buyPetBtn);
+            }
+
+            showBattleLog(log) {
+                const battleInterface = document.getElementById('battle-interface');
+                battleInterface.innerHTML = `
+                    <div class="battle-log">
+                        ${log.join('<br>')}
+                    </div>
+                `;
+            }
+
+            saveGame() {
+                localStorage.setItem('petGameData', JSON.stringify({
+                    pets: this.pets,
+                    gold: this.gold
+                }));
+            }
+
+            loadGame() {
+                const data = JSON.parse(localStorage.getItem('petGameData'));
+                if (data) {
+                    this.pets = data.pets.map(p => Object.assign(new Pet(), p));
+                    this.gold = data.gold;
+                }
+            }
+        }
+
+        const game = new PetGame();
     </script>
 </body>
 </html>
